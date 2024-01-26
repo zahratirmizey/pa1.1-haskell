@@ -13,7 +13,7 @@ targetSum :: [Int] -> Int ->[[Int]]
 targetSum = undefined
 
 -- Question 2
-symmetricTree :: Tree a -> Bool
+symmetricTree :: Eq a => Tree a -> Bool
 symmetricTree = undefined
 
 -- Question 3
@@ -48,7 +48,7 @@ longestCommonString :: LinkedList Char -> LinkedList Char -> LinkedList Char
 longestCommonString = undefined
 
 -- Question 2
-commonAncestor :: Tree a -> a -> a -> Maybe a
+commonAncestor :: Eq a => Tree a -> a -> a -> Maybe a
 commonAncestor = undefined
 
 -- Question 3
