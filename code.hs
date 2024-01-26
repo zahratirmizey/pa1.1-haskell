@@ -17,7 +17,7 @@ symmetricTree :: Eq a => Tree a -> Bool
 symmetricTree = undefined
 
 -- Question 3
-palindromList :: LinkedList a -> Bool
+palindromList :: Eq a => LinkedList a -> Bool
 palindromList = undefined
 
 -- Question 4
