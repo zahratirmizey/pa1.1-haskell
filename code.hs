@@ -76,9 +76,9 @@ main =
         describe "targetSum" $ do
             it "should return pairs whose sum is equal to the target" $ do
                 targetSum [1,2,3,4,5] 5 `shouldBe` [[3,2], [4,1]]
-                targetSum [1,2,3,4,5] 10 `shouldBe` [[6,4]]
+                targetSum [1,2,3,4,5,6] 10 `shouldBe` [[6,4]]
                 targetSum [1,2,3,4,5] 0 `shouldBe` []
-                targetSum [1,10,8,7,6,2,3,4,5,-1,9] 10 `shouldBe` [[6,4],[7,3],[8,2],[9,1], [10,-1]]
+                targetSum [1,10,8,7,6,2,3,4,5,-1,9] 10 `shouldBe` [[6,4],[7,3],[8,2],[9,1]]
     
     -- Test Symmetric Tree
         describe "symmetricTree" $ do
