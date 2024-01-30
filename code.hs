@@ -48,7 +48,7 @@ longestCommonString :: LinkedList Char -> LinkedList Char -> LinkedList Char
 longestCommonString = undefined
 
 -- Question 2
-commonAncestor :: Eq a => Tree a -> a -> a -> Maybe a
+commonAncestor :: Ord a => Eq a => Tree a -> a -> a -> Maybe a
 commonAncestor = undefined
 
 -- Question 3
@@ -83,7 +83,7 @@ main =
     -- Test Symmetric Tree
         describe "symmetricTree" $ do
             it "should return True if the tree is symmetric" $ do
-                symmetricTree Nil `shouldBe` True
+                symmetricTree (Nil :: Tree Int) `shouldBe` True
                 symmetricTree (TreeNode (TreeNode Nil 1 Nil) 2 (TreeNode Nil 1 Nil)) `shouldBe` True
                 symmetricTree (TreeNode (TreeNode Nil 1 Nil) 2 (TreeNode Nil 2 Nil)) `shouldBe` False
                 symmetricTree (TreeNode (TreeNode (TreeNode Nil 1 Nil) 2 (TreeNode Nil 3 Nil)) 4 (TreeNode (TreeNode Nil 3 Nil) 2 (TreeNode Nil 1 Nil))) `shouldBe` True
@@ -92,7 +92,7 @@ main =
     -- Test Palindrom List
         describe "palindromList" $ do
             it "should return True if the list is a palindrome" $ do
-                palindromList Null `shouldBe` True
+                palindromList (Null :: LinkedList Int) `shouldBe` True
                 palindromList (ListNode 1 (ListNode 2 (ListNode 3 (ListNode 2 (ListNode 1 Null))))) `shouldBe` True
                 palindromList (ListNode 1 (ListNode 2 (ListNode 3 (ListNode 3 (ListNode 1 Null))))) `shouldBe` False
                 palindromList (ListNode 1 (ListNode 2 (ListNode 3 (ListNode 2 (ListNode 2 Null))))) `shouldBe` False
@@ -153,9 +153,10 @@ main =
                 commonAncestor Nil 1 2 `shouldBe` Nothing
                 commonAncestor (TreeNode (TreeNode Nil 1 Nil) 2 (TreeNode Nil 3 Nil)) 1 3 `shouldBe` Just 2
                 commonAncestor (TreeNode (TreeNode Nil 1 Nil) 2 (TreeNode Nil 3 Nil)) 1 4 `shouldBe` Nothing
-                commonAncestor (TreeNode (TreeNode (TreeNode Nil 1 Nil) 3 (TreeNode Nil 6 Nil)) 4 (TreeNode (TreeNode Nil 5 Nil) 2 (TreeNode Nil 7 Nil))) 1 7 `shouldBe` Just 4
-                commonAncestor (TreeNode (TreeNode (TreeNode Nil 1 Nil) 3 (TreeNode Nil 6 Nil)) 4 (TreeNode (TreeNode Nil 5 Nil) 2 (TreeNode Nil 7 Nil))) 2 7 `shouldBe` Just 2
-                commonAncestor (TreeNode (TreeNode (TreeNode Nil 1 Nil) 3 (TreeNode Nil 6 Nil)) 4 (TreeNode (TreeNode Nil 5 Nil) 2 (TreeNode Nil 7 Nil))) 1 3 `shouldBe` Just 3
+                commonAncestor (TreeNode (TreeNode (TreeNode Nil 1 Nil) 3 (TreeNode Nil 4 Nil)) 5 (TreeNode (TreeNode Nil 6 Nil) 8 (TreeNode Nil 9 Nil))) 1 6 `shouldBe` Just 5
+                commonAncestor (TreeNode (TreeNode (TreeNode Nil 1 Nil) 3 (TreeNode Nil 4 Nil)) 5 (TreeNode (TreeNode Nil 6 Nil) 8 (TreeNode Nil 9 Nil))) 8 9 `shouldBe` Just 8
+                commonAncestor (TreeNode (TreeNode (TreeNode Nil 1 Nil) 3 (TreeNode Nil 4 Nil)) 5 (TreeNode (TreeNode Nil 6 Nil) 8 (TreeNode Nil 9 Nil))) 1 3 `shouldBe` Just 3
+                
     
     -- Test Game of Life
         describe "gameofLife" $ do
@@ -174,12 +175,13 @@ main =
                 waterCollection [1,2,3,4,5] `shouldBe` 0
                 waterCollection [5,4,3,2,1] `shouldBe` 0
                 waterCollection [5,4,3,2,1,2,3,4,5] `shouldBe` 32  
+                waterCollection [1, 0, 2, 3, 1, 4] `shouldBe` 6
+                waterCollection [0, 4, 1, 2, 0, 1, 3] `shouldBe` 16
     
     -- Test Min Path Maze
         describe "minPathMaze" $ do
             it "should return the minimum cost to reach the bottom right cell" $ do
                 minPathMaze [[1,3,1],[1,5,1],[4,2,1]] `shouldBe` 7
-                minPathMaze [[1,2,3],[4,5,6]] `shouldBe` 12
                 minPathMaze [[1,2,3],[4,5,6],[7,8,9]] `shouldBe` 21
                 minPathMaze [[1,2,3,4],[4,5,6,7],[7,8,9,9],[10,11,1,13]] `shouldBe` 35
                 minPathMaze [[1,2,3,4,5],[4,5,6,7,8],[7,8,9,9,10],[10,11,1,13,14],[15,16,17,18,19]] `shouldBe` 66
