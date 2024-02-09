@@ -10,23 +10,106 @@ data LinkedList a = Null | ListNode a (LinkedList a) deriving (Show, Eq)
 
 -- Question 1
 targetSum :: [Int] -> Int ->[[Int]]
-targetSum = undefined
+targetSum list t = [ [x, y] | x <- bubbleSort list, y <- bubbleSort list, x+y == t, x >= y, x /= y ]
+
+isSorted [] = True
+isSorted [x] = True
+isSorted (x:y:xs) = if x <= y
+                        then isSorted (y:xs)
+                        else False
+bubble [] = []
+bubble [x] = [x]
+bubble (x:y:ys) = if x <=  y
+                        then x : bubble (y:ys)
+                        else y : bubble (x:ys)
+bubbleSort [] = []
+bubbleSort [x] = [x]
+bubbleSort list = if isSorted list
+                        then list
+                        else bubbleSort(bubble list)
 
 -- Question 2
+
 symmetricTree :: Eq a => Tree a -> Bool
-symmetricTree = undefined
+symmetricTree Nil = True
+symmetricTree (TreeNode l m r) = check l r
+
+check Nil Nil = True
+check l Nil = False
+check Nil r = False
+check (TreeNode l1 m1 r1) (TreeNode l2 m2 r2)  = if m1 == m2
+                                                 then check l1 r2 && check r1 l2 
+                                                 else False
 
 -- Question 3
+
 palindromList :: Eq a => LinkedList a -> Bool
-palindromList = undefined
+palindromList list = isItPal(convert list)
+
+convert Null = []
+convert (ListNode a b) = a : convert b
+
+lastElement [x] = x
+lastElement (x:xs) = lastElement xs
+
+remo [x] = []
+remo (x:xs) = x : remo xs
+
+isItPal [] = True
+isItPal [x] = True
+isItPal (x:xs) = if x == lastElement xs
+                    then isItPal (remo xs)
+                    else False
 
 -- Question 4
 snakeTraversal :: Tree a -> [a]
-snakeTraversal = undefined
+snakeTraversal tree = bfs [tree] True
+
+bfs [] b = []
+bfs trees order = let (vals, nextLevel) = rightCompress collectVals ([], []) trees
+                  in if order 
+                     then vals ++ bfs (comb nextLevel) (customNot order) 
+                     else rever vals ++ bfs (comb nextLevel) (customNot order)
+    
+rightCompress f acc [] = acc
+rightCompress f acc (x:xs) = f x (rightCompress f acc xs)
+
+rever [] = []
+rever (x:xs) = rever xs ++ [x]
+
+comb [] = []
+comb (x:xs) = x ++ comb xs
+
+customNot True = False
+customNot False = True
+
+collectVals Nil acc = acc
+collectVals (TreeNode left val right) (vals, nextLevel) = (val : vals, [left, right] : nextLevel)
 
 -- Question 5
 treeConstruction :: String -> Tree Char
-treeConstruction = undefined
+treeConstruction [] = Nil
+treeConstruction [x] = if x /= '^' 
+                        then TreeNode Nil x Nil
+                        else Nil
+treeConstruction (x:xs) = if x == '^'
+                           then Nil
+                           else TreeNode (buildTree xs True) x (buildTree xs False)
+
+buildTree :: String -> Bool -> Tree Char
+buildTree [] bval = Nil
+buildTree [x] bval= if bval == True
+                        then TreeNode Nil x Nil 
+                        else Nil 
+buildTree (x:y:xs) bval = if bval == True
+                        then if x /= '^' && y == '^'
+                            then TreeNode (Nil) x (Nil)
+                            else if x /= '^' && y /= '^'
+                                then  TreeNode (buildTree (y:xs) True) x (Nil)
+                                else Nil
+                        else if x == '^'
+                            then buildTree (y:xs) True
+                            else buildTree (y:xs) False 
 
 
 -- Category: Medium
@@ -34,8 +117,12 @@ treeConstruction = undefined
 -- Attempy any 4 questions from this category
 
 -- Question 1.1: Overload the (+) operator for Tree. You only need to overload (+). Keep the rest of the operators as undefined.   
+
 instance Num (Tree Int) where
-    (+) = undefined
+    (+) Nil Nil = Nil
+    (+) (TreeNode x left1 right1) (TreeNode y left2 right2) = TreeNode (x + y) (left1 + left2) (right1 + right2)
+    (+) (TreeNode x left right) Nil = TreeNode x left right
+    (+) Nil (TreeNode y left right) = TreeNode y left right
     (*) = undefined
     abs = undefined
     signum = undefined
@@ -45,11 +132,32 @@ instance Num (Tree Int) where
 -- Question 1.2
 
 longestCommonString :: LinkedList Char -> LinkedList Char -> LinkedList Char
-longestCommonString = undefined
+longestCommonString Null Null = Null
+longestCommonString (ListNode a b) Null = Null
+longestCommonString Null (ListNode a b) = Null
+longestCommonString (ListNode a b) (ListNode c d) = if a == c
+                                    then ListNode a (longestCommonString b d)
+                                    else Null
 
 -- Question 2
 commonAncestor :: Ord a => Eq a => Tree a -> a -> a -> Maybe a
-commonAncestor = undefined
+commonAncestor a b c = if present a b && present a c
+                        then common a b c
+                        else Nothing
+
+present Nil b = False
+present (TreeNode l v r) b = if v == b
+                            then True
+                            else if v > b
+                                then present l b
+                            else present r b
+
+common Nil a b = Nothing
+common (TreeNode left value right) p q = if (value < p && value < q)
+                                                 then common right p q
+                                                 else if  (value > p && value > q)
+                                                    then common left p q
+                                                 else Just value
 
 -- Question 3
 gameofLife :: [[Int]] -> [[Int]]
@@ -57,11 +165,48 @@ gameofLife = undefined
 
 -- Question 4
 waterCollection :: [Int] -> Int
-waterCollection = undefined
+waterCollection heights = trappedWater heights (maxLeft heights) (maxRight heights)
+
+
+maxLeft heights = maxLeftHelper heights 0
+maxLeftHelper [] a = []
+maxLeftHelper (h:hs) maxSoFar = maxSoFar : maxLeftHelper hs (max h maxSoFar)
+
+maxRight h = reverseList (maxLeft (reverseList h))
+
+reverseList [] = []
+reverseList (x:xs) = reverseList xs ++ [x]
+
+mini x y = if x < y then x else y
+
+maxi x y = if x > y then x else y
+
+trappedWater [] [] [] = 0
+trappedWater (h:hs) (l:ls) (r:rs) = (2* (maxi (mini l r - h)  0)) +  trappedWater hs ls rs
 
 -- Question 5
+
 minPathMaze :: [[Int]] -> Int
-minPathMaze = undefined
+minPathMaze grid = minPathSumFrom grid 0 0
+
+getValue grid x y
+  | x < 0 || y < 0 = Nothing
+  | x >= length grid = Nothing
+  | y >= length (head grid) = Nothing
+  | otherwise = Just ((grid !! x) !! y)
+
+minPathSumFrom grid x y =
+  case getValue grid x y of
+    Nothing -> maxBound :: Int 
+    Just value ->
+      if x == length grid - 1 && y == length (head grid) - 1
+      then value
+      else
+        let rightSum = minPathSumFrom grid x (y + 1)
+            downSum = minPathSumFrom grid (x + 1) y
+        in value + min rightSum downSum
+
+
 
 
 
